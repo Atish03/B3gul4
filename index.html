@@ -12,19 +12,25 @@
 </head>
 <style>
     body {
-        position: relative;
         margin: 0px; padding: 0px;
-        height: auto; width: 100vw;
-        min-height: 100vh;
+    }
+    ::-webkit-scrollbar {
+        width: 10px;
+        background-color: black;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background-color: rgb(75, 75, 75);
     }
     #container {
         position: absolute;
-        height: 100vh; width: 100%;
+        top: 0px; left: 0px;
+        height: 100%; width: 100%;
         background-color: rgb(32, 32, 32);
     }
     #main {
-        position: absolute;
-        height: 100%; width: 100%;
+        position: relative;
+        height: fit-content; width: 100%;
         background-color: rgb(32, 32, 32);
         display: flex; justify-content: top;
         flex-direction: column;
@@ -62,10 +68,6 @@
         border-radius: 5px; font-size: 15px;
         width: max-content;    
     }
-    .highlight {
-        background-color: rgb(65, 65, 65);
-        margin: 7px; padding: 5px; border-radius: 5px;
-    }
     #cImage {
         background-image: url("assets/challenge.png");
         background-position: center;
@@ -79,11 +81,15 @@
     #descp {
         text-align: center;
     }
+    code {
+        background-color: rgb(65, 65, 65);
+        margin: 7px; padding: 5px; border-radius: 5px;
+    }
 </style>
 <body>
     <div id="container">
         <div id="main">
-            <div id="descp"><div id="cImage"></div>This challenge is named <span class="highlight"><a href="https://tryhackme.com/room/yearoftherabbit">YEAR OF THE RABBIT</a></span>. We are provided with an ip from which we have to find user flag and root flag.</div>
+            <div id="descp"><div id="cImage"></div>This challenge is named <code><a href="https://tryhackme.com/room/yearoftherabbit">YEAR OF THE RABBIT</a></code>. We are provided with an ip from which we have to find user flag and root flag.</div>
             <div id="files">No files for this challenge, your disk space is saved :|</div>
             <div id="solution"></div>
         </div>
