@@ -10,3 +10,5 @@ Here we see a <code>assets</code> directory which contains files related to the 
 <br><br><img src="assets/assets.png"><br><br>
 On inspecting the style.css we find another directory name <code>/sup3r_s3cr3t_fl4g.php</code> when we go to that site we get the following popup:
 <br><br><img src="assets/popup.png"><br><br>
+We then disable the javascript and find out a rickroll video on the webpage. After playing the video we hear a voice saying <code><i>I’ll put you out of your misery you’re looking in the wrong place</i></code>
+And a burping sound in middle. This hints us to use <code>Burpsuit</code>.<br><br>
