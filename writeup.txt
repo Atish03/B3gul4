@@ -1,1 +1,8 @@
-hahahahaha <span class="highlight">lololol</span>
+The first thing we do is run a scan on the IP to find any open ports. Here I have used <code>ferroxbuster</code> to scan the IP and the results are as follows:
+<pre><code>
+200      GET      189l      643w     7853c http://10.10.116.41/
+
+301      GET        9l       28w      313c http://10.10.116.41/assets => http://10.10.116.41/assets/
+
+403      GET        9l       28w      277c http://10.10.116.41/server-status
+</code></pre>
