@@ -4,9 +4,50 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://highlightjs.org/static/demo/styles/atom-one-dark.css">
     <title>B3gu_writes</title>
 </head>
+<style>
+    body {
+        position: relative;
+        margin: 0px; padding: 0px;
+        height: auto; width: 100vw;
+        min-height: 100vh;
+    }
+    #container {
+        position: absolute;
+        height: 100vh; width: 100%;
+        background-color: rgb(32, 32, 32);
+    }
+    #main {
+        position: absolute;
+        height: 100%; width: 100%;
+        background-color: rgb(32, 32, 32);
+        display: flex; justify-content: top;
+        flex-direction: column;
+        align-items: center;
+    }
+    #main div {
+        position: relative;
+        color: white;
+        margin: 10px; padding: 20px;
+        height: auto; width: 90%;
+        background-color: rgb(27, 25, 25);
+    }
+</style>
 <body>
-    <h1>hello</h1>
+    <div id="container">
+        <div id="main">
+            <div id="descp">lol u cant do anything</div>
+            <div id="files">No files for this challenge, your disk space is saved :|</div>
+            <div id="solution"><pre><code id="mycode" class="language-python"></code></pre></div>
+        </div>
+    </div>
+    <script src="highlight.min.js"></script>
+    <script>
+        const code = "import random\nfor i in range(100):\n\tprint(a)";
+        document.getElementById("mycode").innerHTML = code;
+    </script>
+    <script>hljs.highlightAll();</script>
 </body>
 </html>
