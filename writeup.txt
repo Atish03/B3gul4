@@ -7,6 +7,6 @@ The first thing we do is run a scan on the IP to find any open ports. Here I hav
 403      GET        9l       28w      277c http://10.10.116.41/server-status
 </code></pre>
 Here we see a <code>assets</code> directory which contains files related to the webpage, we find the following in that directory:
-<img src="assets/assets.png">
+<br><br><img src="assets/assets.png"><br><br>
 On inspecting the style.css we find another directory name <code>/sup3r_s3cr3t_fl4g.php</code> when we go to that site we get the following popup:
-<img src="assets/popup.png">
+<br><br><img src="assets/popup.png"><br><br>
