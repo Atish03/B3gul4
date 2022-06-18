@@ -21,3 +21,43 @@ So what do we do? Bruteforce!
 using hydra we will bruteforce it.
 <br><br><img src="assets/hydra.png"><br><br>
 We log in using the creds.
+<br><br><img src="assets/ftp.png"><br><br>
+we <code>get</code> the file <code>Eli's_Creds.txt</code>, It contains the following text:
+<pre><code>
++++++ ++++[ ->+++ +++++ +<]>+ +++.< +++++ [->++ +++<] >++++ +.<++ +[->-
+--<]> ----- .<+++ [->++ +<]>+ +++.< +++++ ++[-> ----- --<]> ----- --.<+
+++++[ ->--- --<]> -.<++ +++++ +[->+ +++++ ++<]> +++++ .++++ +++.- --.<+
++++++ +++[- 00000000000000000000000000000000000 +++++ +++[- >++++ ++++<
+]>+++ +++.< ++++[ ->+++ +<]>+ .<+++ +[->+ +++<] >++.. ++++. ----- ---.+
+++.<+ ++[-> ---<] >---- -.<++ ++++[ ->--- ---<] >---- --.<+ ++++[ ->---
+--<]> -.<++ ++++[ ->+++ +++<]0000000000000000000000000000000000[- >++++
++<]>+ +++.< +++++ +[->- ----- <]>-- ----- -.<++ ++++[ ->+++ +++<] >+.<+
+++++[ ->--- --<]> ---.< +++++ [->-- ---<] >---. <++++ ++++[ ->+++ +++++
+<]>++ ++++. <++++ +++[- >---- ---<] >---- -.+++ +.<++ +++++ [->++ +++++
+<]>+. <+++[ ->--- <]>-- ---.- ----. <
+</code></pre>
+An esoteric language brainfuck, decoding this using any online decoder we get Eli's ssh credential.
+<code>User: eli<br>Password: DSpDiM****wid</code>
+Logging in we find ourselves in eli's directory.
+There is another user <code>gwendoline</code> on the server and there was a message for him at the beginning
+<br><br><img src="assets/message.png"><br><br>
+we find <code>s3cr3t</code> directory
+we the following:
+<pre><code>
+/var/www/html/sup3r_s3cr3t_fl4g.php
+/usr/games/s3cr3t
+/usr/games/s3cr3t/.th1s_m3ss4ag3_15_f0r_gw3nd0l1n3_0nly!
+</code></pre>
+Reading the <code>/usr/games/s3cr3t/.th1s_m3ss4ag3_15_f0r_gw3nd0l1n3_0nly!</code> gives us his password.
+logging in as <code>gwendoline</code> we find user.txt in his directory.
+
+Now we need root.txt,
+running <code>sudo -l</code> we find 
+<br><br><img src="assets/sudo_l.png"><br><br>
+we see that everyone except root can run <code>/usr/bin/vi /home/gwendoline/user.txt</code>
+googling <code>(ALL, !root) NOPASSWD: /usr/bin/vi</code> gives us a blog about the vulnerabilities
+<code>https://cheatography.com/blacklist/cheat-sheets/linux-windows-privilege-escalation/</code>
+we find the following command on this webpage
+<br><br><img src="assets/escalation.png"><br><br>
+using this command we get access to vi editor as a root,
+using <code>:!/bin/sh</code> we get the root shell and finally get root.txt.
