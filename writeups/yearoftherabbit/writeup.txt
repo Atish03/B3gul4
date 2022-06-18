@@ -13,11 +13,11 @@ On inspecting the style.css we find another directory name <code>/sup3r_s3cr3t_f
 We then disable the javascript and find out a rickroll video on the webpage. After playing the video we hear a voice saying <code><i>I’ll put you out of your misery you’re looking in the wrong place</i></code>
 And a burping sound in middle. This hints us to use <code>Burpsuit</code>.<br><br>
 When we use Burpsuit we find a hidden directory in the interception. Following the directory we find a image named <code>Hot_Babe.png</code>.
-<br><br><img src="assets/hotBabe.png><br><br>
+<br><br><img src="assets/hotBabe.png"><br><br>
 The first thing we do when we find a image file is to see its <code>exifdata</code> and use <code>strings</code> on it.
 Using strings returns the following:
-<br><br><img src="assets/strings.png><br><br>
+<br><br><img src="assets/strings.png"><br><br>
 So what do we do? Bruteforce!
 using hydra we will bruteforce it.
-<br><br><img src="assets/hydra.png><br><br>
+<br><br><img src="assets/hydra.png"><br><br>
 We log in using the creds.
