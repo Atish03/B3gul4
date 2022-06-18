@@ -54,7 +54,7 @@ we see a <code>scripts</code> directory. Changing our directory to that we find 
 -rwxr-xrwx    1 1000     1000          314 Jun 04  2020 clean.sh
 -rw-rw-r--    1 1000     1000         1634 Jun 18 12:02 removed_files.log
 -rw-r--r--    1 1000     1000           68 May 12  2020 to_do.txt
-</code><pre>
+</code></pre>
 here we see that <code>clean.sh</code> has read write permissions and after investigating it for a bit, we find that it is ran at an interval probably using a <code>cronjob</code>
 therefore we change it to what we want to be executed at the server.
 We will try getting a reverse shell.
