@@ -1,4 +1,4 @@
-The first thing we do is run a scan on the IP to find any open ports. Here I have used <code>ferroxbuster</code> to scan the IP and the results are as follows:
+The first thing we do is to run a scan on the IP to find any open ports. Here I have used <code>feroxbuster</code> to scan the IP and the results are as follows:
 <pre><code>
 200      GET      189l      643w     7853c http://10.10.116.41/
 
@@ -11,10 +11,10 @@ Here we see a <code>assets</code> directory which contains files related to the 
 On inspecting the style.css we find another directory name <code>/sup3r_s3cr3t_fl4g.php</code> when we go to that site we get the following popup:
 <br><br><img src="assets/popup.png"><br><br>
 We then disable the javascript and find out a rickroll video on the webpage. After playing the video we hear a voice saying <code><i>I’ll put you out of your misery you’re looking in the wrong place</i></code>
-And a burping sound in middle. This hints us to use <code>Burpsuit</code>.<br><br>
-When we use Burpsuit we find a hidden directory in the interception. Following the directory we find a image named <code>Hot_Babe.png</code>.
+And a burping sound in middle. This hints us to use <code>Burpsuite</code>.<br><br>
+When we use Burpsuite we find a hidden directory in the interception. Following the directory we find an image named <code>Hot_Babe.png</code>.
 <br><br><img src="assets/hotBabe.png"><br><br>
-The first thing we do when we find a image file is to see its <code>exifdata</code> and use <code>strings</code> on it.
+The first thing we do when we find an image file is to see its <code>exifdata</code> and use <code>strings</code> on it.
 Using strings returns the following:
 <br><br><img src="assets/strings.png"><br><br>
 So what do we do? Bruteforce!
