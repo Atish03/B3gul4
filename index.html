@@ -4,9 +4,97 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400&family=Titillium+Web:wght@300&display=swap" rel="stylesheet">
     <title>Hi there</title>
 </head>
+<style>
+    body {
+        margin: 0px; padding: 0px;
+        background-color: rgb(241, 235, 253);
+    }
+    ::-webkit-scrollbar {
+        width: 10px;
+        background-color: black;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background-color: rgb(75, 75, 75);
+    }
+    #container {
+        height: fit-content; width: 100vw;
+        min-height: 100vh;
+        backdrop-filter: blur(5px);
+        display: flex; justify-content: center; align-items: center;
+    }
+    #menu {
+        position: absolute;
+        top: 0px; right: 0px;
+        margin: 30px;
+        width: 500px; height: 70px;
+        border: 1px solid rgb(49, 49, 49);
+        border-radius: 5px;
+        display: flex; flex-direction: row;
+    }
+    .mBut a {
+        text-decoration: none;
+        color: rgb(255, 255, 255);
+    }
+    .mBut {
+        position: relative;
+        margin: auto; padding-top: 16px; padding-bottom: 16px;
+        text-align: center;
+        width: 30%; height: auto;
+        border: 1px solid rgb(87, 87, 87);
+        border-radius: 5px;
+        color: rgb(255, 255, 255);
+        font-family: 'Montserrat', sans-serif;
+        background-color: rgb(179, 168, 240);
+        transition: all 0.2s;
+    }
+    .mBut:hover {
+        background-color: rgb(159, 144, 247);
+        border: none;
+        box-shadow: inset 0px 0px 15px white;
+    }
+    #intro {
+        position: relative;
+        width: 80%;
+        height: 200px; max-width: 750px;
+        border: 1px solid grey;
+        border-radius: 5px;
+        padding: 30px;
+        font-family: 'Titillium Web', sans-serif; font-size: 25px;
+    }
+    #intro::before {
+        content: "";
+        position: absolute;
+        top: -80px; left: -80px;
+        height: 200px; width: 200px;
+        border: 2px solid grey; border-radius: 50%;
+        background-image: url("assets/me.jpg"); background-position: top; background-size: 100%;
+    }
+    @media only screen and (max-width: 985px) {
+        #intro::before {
+            top: -80px; left: calc(40% - 40px);
+        }
+        .mBut {
+            position: absolute;
+        }
+    }
+</style>
 <body>
-    <h1><a href="/B3gul4.github.io/writeups/">Click me</a></h1>
+    <div id="container">
+        <div id="menu">
+            <div class="mBut" id="about">ABOUT</div>
+            <div class="mBut" id="contact">CONTACT</div>
+            <div class="mBut" id="begu"><a href="./B3gula/">MEET BEGULA</a></div>
+        </div>
+        <div id="intro">
+            &emsp;&emsp;&emsp;&emsp; Hello I am Atish Shah and I like making websites just for fun.
+            &emsp;&emsp;&emsp;&emsp;etc etc..... bla bla.....
+        </div>
+    </div>
 </body>
 </html>

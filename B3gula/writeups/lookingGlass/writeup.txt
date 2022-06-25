@@ -1,0 +1,68 @@
+<h1>Nmap</h1>
+Scanning the given IP we find out that there are too many ports open on the IP. Seeing into the details we find out that it is a <code>dropbear</code> sshd service which is replacement for OpenSSH service for machines with low memory and porcess power.
+<pre><code>PORT      STATE SERVICE VERSION
+10000/tcp open  ssh     Dropbear sshd (protocol 2.0)
+| ssh-hostkey: 
+|_  2048 ff:f4:db:79:a9:bc:b8:8a:d4:3f:56:c2:cf:cb:7d:11 (RSA)
+</code></pre>
+<h1>SSH</h1>
+We try logging in to ssh on default port. Obvious guess for the username would be user <code>alice</code>. But we do not have alice's password.
+when we try logging in on different port say 10000, we get.
+<pre><code>└─$ ssh alice@\ip\ -p 10000
+Lower
+Connection to \ip\ closed.
+</code></pre>
+It says <code>Lower</code>. It seems to direct us to a specific port. since there are more than 4000 ports we write a <code>Binary search</code> script.
+<pre><code>import subprocess
+
+low = 9000; high = 13200
+
+def solve(high, low):
+	while True:
+		mid = (high + low) // 2
+		out = subprocess.Popen("ssh -o StrictHostKeyChecking=no -tt alice@\ip\ -p {}".format(mid).split(), stdout = subprocess.PIPE, stdin=subprocess.PIPE)
+		ret = out.communicate()[0].decode()
+		if "Higher" in ret:
+			high = mid
+		elif "Lower" in ret:
+			low = mid
+		else:
+			return mid
+
+print(solve(high, low))</code></pre>
+This will return us the port which it is trying us to reach.
+Logging into the SSH on the returned port will return us the following
+<br><br><img src="assets/alice.png"><br><br>
+The title of this gibberish is <code>Jabberwocky</code> which is a nonsensical poem. Googling the title we find the original poem. Comparing the two we find that some sort of ciphering is used.
+The cipher which comes to mind first is <code>Vigenere</code>. Lets try decrypting this using the following tool <code><a style="color:lightblue; text-decoration:underline;" href="https://www.boxentriq.com/code-breaking/vigenere-cipher">vigenere-cipher decoder</a></code>
+with maximum possile key-length.
+we get the key as <code>thealphabetcipher</code>
+<br><br><img src="assets/decoded.png"><br><br>
+decoding the text using the key we find the secret.
+Entering the secret we get creds for user <code>Jabberwock</code>. looging in as jabberwock we find the user.txt flag as a reversed string.
+we also find a <code>twasBrillig.sh</code> script with read write permissions. Lets run <code>linpeas</code> and find out if there is something fishy going on with this file.
+After running linpeas we find interesting find in <code>cronjobs</code> section. 
+<br><br><img src="assets/cron.png"><br><br>
+It says that the script is ran at every reboot as root. So we try to get reverse shell by placing our code in <code>twasBrillig.sh</code> and running reboot as sudo.
+We get a shell logged in as user <code>tweedledum</code>
+<br><br><img src="assets/revshell.png"><br><br>
+We find a <code>humptydumpty.txt</code> in our home directory. It contains
+<pre><code>dcfff5eb40423f055a4cd0a8d7ed39ff6cb9816868f5766b4088b9e9906961b9
+7692c3ad3540bb803c020b3aee66cd8887123234ea0c6e7143c0add73ff431ed
+28391d3bc64ec15cbb090426b04aa6b7649c3cc85f11230bb0105e02d15e3624
+b808e156d18d1cecdcc1456375f8cae994c36549a07c8c2315b473dd9d7f404f
+fa51fd49abf67705d6a35d18218c115ff5633aec1f9ebfdc9d5d4956416f57f6
+b9776d7ddf459c9ad5b0e1d6ac61e27befb5e99fd62446677600d7cacef544d0
+5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8
+7468652070617373776f7264206973207a797877767574737271706f6e6d6c6b
+</code></pre>
+This seems to be some kind of hash. First thing we should do after getting a hex is to try converting it to ASCII.
+Converting our hashes we find password for user <code>humptydumpty</code> at the end of the line.
+<br><br><img src = "assets/humpty.png"><br><br>
+Now the only user left is <code>alice</code>. We find nothing in the user directory but we may try getting the <code>.ssh/id_rsa</code> private key in alice's dirctory.
+<br><br><img src="assets/alicersa.png"><br><br>
+Woo! we found the private Key.
+now we copy this to our local machine and login as alice.
+We will go through out <code>linpeas</code> scan and try finding something that will help escalate our privilage.
+We find that user alice can run <code>/bin/bash</code> as root on the host <code>ssalg-gnikool</code>. Reading the man page of the sudo we find that <code>-h</code> is used to specify the hostname.
+we write <code>sudo -h ssalg-gnikool /bin/bash</code> and we have the root shell.
