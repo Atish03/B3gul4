@@ -32,7 +32,8 @@ def solve(high, low):
 print(solve(high, low))</code></pre>
 This will return us the port which it is trying us to reach.
 Logging into the SSH on the returned port will return us the following
-<br><br><img src="assets/alice.png"><br><br>
+<h3 style="text-decoration:underline;">User: Jabberwock</h3>
+<img src="assets/alice.png"><br><br>
 The title of this gibberish is <code>Jabberwocky</code> which is a nonsensical poem. Googling the title we find the original poem. Comparing the two we find that some sort of ciphering is used.
 The cipher which comes to mind first is <code>Vigenere</code>. Lets try decrypting this using the following tool <code><a style="color:lightblue; text-decoration:underline;" href="https://www.boxentriq.com/code-breaking/vigenere-cipher">vigenere-cipher decoder</a></code>
 with maximum possile key-length.
@@ -46,6 +47,7 @@ After running linpeas we find interesting find in <code>cronjobs</code> section.
 It says that the script is ran at every reboot as root. So we try to get reverse shell by placing our code in <code>twasBrillig.sh</code> and running reboot as sudo.
 We get a shell logged in as user <code>tweedledum</code>
 <br><br><img src="assets/revshell.png"><br><br>
+<h3 style="text-decoration:underline;">User: Humptydumpty</h3>
 We find a <code>humptydumpty.txt</code> in our home directory. It contains
 <pre><code>dcfff5eb40423f055a4cd0a8d7ed39ff6cb9816868f5766b4088b9e9906961b9
 7692c3ad3540bb803c020b3aee66cd8887123234ea0c6e7143c0add73ff431ed
@@ -59,8 +61,10 @@ b9776d7ddf459c9ad5b0e1d6ac61e27befb5e99fd62446677600d7cacef544d0
 This seems to be some kind of hash. First thing we should do after getting a hex is to try converting it to ASCII.
 Converting our hashes we find password for user <code>humptydumpty</code> at the end of the line.
 <br><br><img src = "assets/humpty.png"><br><br>
+<h3 style="text-decoration:underline;">User: Alice</h3>
 Now the only user left is <code>alice</code>. We find nothing in the user directory but we may try getting the <code>.ssh/id_rsa</code> private key in alice's dirctory.
 <br><br><img src="assets/alicersa.png"><br><br>
+<h1>Privilage Escalation</h1>
 Woo! we found the private Key.
 now we copy this to our local machine and login as alice.
 We will go through out <code>linpeas</code> scan and try finding something that will help escalate our privilage.

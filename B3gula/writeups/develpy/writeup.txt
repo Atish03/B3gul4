@@ -1,0 +1,25 @@
+<h1>Nmap</h1>
+After scanning the IP we find that two ports are open
+<pre><code>PORT      STATE SERVICE
+22/tcp    open  ssh
+| ssh-hostkey: 
+|   2048 78:c4:40:84:f4:42:13:8e:79:f8:6b:e4:6d:bf:d4:46 (RSA)
+|   256 25:9d:f3:29:a2:62:4b:24:f2:83:36:cf:a7:75:bb:66 (ECDSA)
+|_  256 e7:a0:07:b0:b9:cb:74:e9:d6:16:7d:7a:67:fe:c1:1d (ED25519)
+10000/tcp open  snet-sensor-mgmt</code></pre>
+One is SSH and other is an open port we can try to netcat, so lets <code>nc</code> into it.
+We get this as the output.
+<br><br><img src="assets/nc.png"><br><br>
+<h1>Netcat</h1>
+Putting any input we find out that it is running some sort of ping the number of times which is given to it.
+Refering to <a href="https://intx0x80.blogspot.com/2017/05/python-input-vulnerability_25.html" style="color:lightblue; text-decoration: underline;">this</a> we find out that we can run <code>os.system</code> from the input.
+lets take a reverse shell by executing <code>__import__("os").system("rev shell")</code> in the input.
+<br><br><img src="assets/rev.png"><br><br>
+We have a reverse shell !
+for easier interaction lets make ssh key pairs and login to the shell via ssh.
+<h1>Privilage Escalation</h1>
+We find <code>user.txt</code> in the home directory of user king. We also see <code>root.sh</code> and <code>run.sh</code> scripts in the directory.
+Seeing scripts I thought of cronjobs, lets find out what cronjobs are running on the machine.
+<br><br><img src="assets/crontab.png"><br><br>
+We see that <code>root.sh</code> is ran as root every second. Since the directory is writable, we may delete root.sh and write our root.sh instead. Placing our reverse shell command in root.sh, we get the root shell.
+<br><br><img src="assets/root.png">
