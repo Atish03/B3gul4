@@ -1,0 +1,112 @@
+<h1>Nmap</h1>
+Scanning the ip we find
+<pre><code>PORT   STATE SERVICE REASON  VERSION
+22/tcp open  ssh     syn-ack OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 37:96:85:98:d1:00:9c:14:63:d9:b0:34:75:b1:f9:57 (RSA)
+| ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLYC7Hj7oNzKiSsLVMdxw3VZFyoPeS/qKWID8x9IWY71z3FfPijiU7h9IPC+9C+kkHPiled/u3cVUVHHe7NS68fdN1+LipJxVRJ4o3IgiT8mZ7RPar6wpKVey6kubr8JAvZWLxIH6JNB16t66gjUt3AHVf2kmjn0y8cljJuWRCJRo9xpOjGtUtNJqSjJ8T0vGIxWTV/sWwAOZ0/TYQAqiBESX+GrLkXokkcBXlxj0NV+r5t+Oeu/QdKxh3x99T9VYnbgNPJdHX4YxCvaEwNQBwy46515eBYCE05TKA2rQP8VTZjrZAXh7aE0aICEnp6pow6KQUAZr/6vJtfsX+Amn3
+|   256 53:75:fa:c0:65:da:dd:b1:e8:dd:40:b8:f6:82:39:24 (ECDSA)
+| ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMyyGnzRvzTYZnN1N4EflyLfWvtDU0MN/L+O4GvqKqkwShe5DFEWeIMuzxjhE0AW+LH4uJUVdoC0985Gy3z9zQU=
+|   256 1c:4a:da:1f:36:54:6d:a6:c6:17:00:27:2e:67:75:9c (ED25519)
+|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINwiYH+1GSirMK5KY0d3m7Zfgsr/ff1CP6p14fPa7JOR
+80/tcp open  http    syn-ack Golang net/http server (Go-IPFS json-rpc or InfluxDB API)
+|_http-favicon: Unknown favicon MD5: 0D4315E5A0B066CEFD5B216C8362564B
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-title: Overpass
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</code></pre>
+We see that <code>http</code> and <code>ssh</code> services are open.
+<h1>Feroxbuster</h1>
+Using <code>Feroxbuster</code> we find out that there is a admin directory
+<pre><code>200      GET       53l      195w     2431c http://10.10.91.16/
+
+301      GET        0l        0w        0c http://10.10.91.16/css => css/
+
+301      GET        2l        3w       42c http://10.10.91.16/admin => /admin/
+
+301      GET        0l        0w        0c http://10.10.91.16/img => img/
+
+301      GET        0l        0w        0c http://10.10.91.16/downloads => downloads/
+
+301      GET        0l        0w        0c http://10.10.91.16/downloads/src => src/
+
+301      GET        0l        0w        0c http://10.10.91.16/aboutus => aboutus/
+
+301      GET        0l        0w        0c http://10.10.91.16/downloads/builds => builds/</code></pre>
+<h1>Web</h1>
+<h3>Getting Admin</h3>
+The admin page asks for the credentials
+<br><br><img src="assets/admin.png"><br><br>
+After inspecting the page source we find a javascript script named <code>login.js</code>
+<br><br><img src="assets/login.png"><br><br>
+It has the following code
+<pre><code>async function postData(url = '', data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *client
+        body: encodeFormData(data) // body data type must match "Content-Type" header
+    });
+    return response; // We don't always want JSON back
+}
+const encodeFormData = (data) => {
+    return Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&');
+}
+function onLoad() {
+    document.querySelector("#loginForm").addEventListener("submit", function (event) {
+        //on pressing enter
+        event.preventDefault()
+        login()
+    });
+}
+async function login() {
+    const usernameBox = document.querySelector("#username");
+    const passwordBox = document.querySelector("#password");
+    const loginStatus = document.querySelector("#loginStatus");
+    loginStatus.textContent = ""
+    const creds = { username: usernameBox.value, password: passwordBox.value }
+    const response = await postData("/api/login", creds)
+    const statusOrCookie = await response.text()
+    if (statusOrCookie === "Incorrect credentials") {
+        loginStatus.textContent = "Incorrect Credentials"
+        passwordBox.value=""
+    } else {
+        Cookies.set("SessionToken",statusOrCookie)
+        window.location = "/admin"
+    }
+}</code></pre>
+We see that it is vulnerable to <code>Broken Authentication</code> of <code>OWASP top 10 vulnerability</code>
+We set a cookie with key <code>SessionToken</code> and get ourself logged in.
+There we find privateKey for user <code>james</code>
+<br><br><img src="assets/james.png"><br><br>
+<h1>SSH</h1>
+We save it and try logging in as james. We are asked for the passphrase which can be easily cracked using <code>john</code>.
+After logging in as james we find <code>user.txt</code>
+<h1>Privilage Escaltion</h1>
+On the downloads page of the site we find a binary files of overpass. 
+<br><br><img src="assets/binary.png"><br><br>
+downlaoding the file relative to the os we find that it is a password manager, looking in the build scripts we find that this binary creates a <code>.overpass</code> file in home directory in which all the passwords are stored in encrypted form.
+When we look in the home directory of james, we find <code>.overpass</code> file. We find some encrypted text in it.
+<br><br><img src="assets/passfile.png"><br><br>
+We can simply place this file in out local machine and crack it using the password manager we downloaded.
+<br><br><img src="assets/fuck.png"><br><br>
+We find some sort of username and password but it is of no use since that user did not exist on that machine :|
+Since we are going nowhere we could look what cronjobs are running on the machine and we find out that a cronjob is running on the machine.
+<br><br><img src="assets/cronjob.png"><br><br>
+We see that there is a cronjob running as root which passes the content of the  <code>overpass.thm/downloads/src/buildscript.sh</code> to bash and then bash executes it.
+we may try to host our own <code>overpass.thm/downloads/src/buildscript.sh</code> containing a reverse shell and then the script will automatically run that as root in bash.
+But one thing to be noted here is that the url is called by domain name and not the IP. So first we change <code>/etc/hosts</code> of the machine and map our tunnel IP to the damain name <code>overpass.thm</code> 
+<pre><code>127.0.0.1 localhost
+127.0.1.1 overpass-prod
+/tunnel ip/ overpass.thm
+ff02::2 ip6-allrouters</code></pre>
+And we have root shell :)
+<br><br><img src="assets/root.png">
