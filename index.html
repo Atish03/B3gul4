@@ -31,11 +31,13 @@
     #menu {
         position: absolute;
         top: 0px; right: 0px;
+        display: block;
         margin: 30px;
         width: 500px; height: 70px;
         border: 1px solid rgb(49, 49, 49);
         border-radius: 5px;
         display: flex; flex-direction: row;
+        transition: all 0.5s;
     }
     .mBut a {
         text-decoration: none;
@@ -46,7 +48,7 @@
         margin: auto; padding-top: 16px; padding-bottom: 16px;
         text-align: center;
         width: 30%; height: auto;
-        border: 1px solid rgb(87, 87, 87);
+        /*border: 1px solid rgb(87, 87, 87);*/
         border-radius: 5px;
         color: rgb(255, 255, 255);
         font-family: 'Montserrat', sans-serif;
@@ -60,11 +62,12 @@
     }
     #intro {
         position: relative;
-        width: 80%;
-        height: 200px; max-width: 750px;
+        width: 30%;
+        height: 150px; max-width: 750px;
         border: 1px solid grey;
         border-radius: 5px;
         padding: 30px;
+        padding-left: 130px;
         font-family: 'Titillium Web', sans-serif; font-size: 25px;
     }
     #intro::before {
@@ -75,33 +78,84 @@
         border: 2px solid grey; border-radius: 50%;
         background-image: url("assets/me.jpg"); background-position: top; background-size: 100%;
     }
-    @media only screen and (max-width: 985px) {
-        #intro::before {
-            top: -80px; left: calc(40% - 40px);
-        }
+    #respMenu {
+        position: absolute;
+        top: 0px; right: 0px;
+        height: 20px; width: 30px;
+        background-color: transparent;
+        margin: 20px;
+        display: none;
+        z-index: 3;
+    }
+    #respMenu span {
+        position: absolute;
+        width: 100%; height: 20%;
+        background-color: black;
+        transition: all 0.5s;
+    }
+    #third {
+        bottom: 0px;
+    }
+    #second {
+        top: 40%;
+    }
+    @media only screen and (max-width: 600px) {
         #menu {
-            width: 150px;
-            padding: 0px;
-            height: 70px;
+            height: auto;
+            width: 100%; margin: 0px; padding: 0px;
+            z-index: 2;
+            background-color: white;
+            display: none; flex-direction: column;
+            justify-content: center; align-items: center;
+            transition: all 0.5s;
         }
         .mBut {
-            width: 100%;
-            position: absolute;
-            margin: 0px;
+            margin: 10px;
+        }
+        #intro::before {
+            height: 150px; width: 150px;
+            top: -100px;
+            left: calc(50% - 75px);
+        }
+        #intro {
+            padding-top: 60px;
+            padding-left: 30px;
+            width: 80%; height: 100px;
+            font-size: 20px;
+        }
+        #respMenu {
+            display: block;
         }
     }
 </style>
 <body>
     <div id="container">
+        <div id="respMenu"><span id="first"></span><span id="second"></span><span id="third"></span></div>
         <div id="menu">
             <div class="mBut" id="about">ABOUT</div>
             <div class="mBut" id="contact">CONTACT</div>
             <div class="mBut" id="begu"><a href="./B3gula/">MEET BEGULA</a></div>
         </div>
         <div id="intro">
-            &emsp;&emsp;&emsp;&emsp; Hello I am Atish Shah and I like making websites just for fun.
-            &emsp;&emsp;&emsp;&emsp;etc etc..... bla bla.....
+            Hello I am Atish Shah and I like making websites just for fun. I am pursuing Bachelor of Technology in Engineering Physics at IIT(ISM) Dhanbad.
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+        $("#respMenu").click(() => {
+            if ($("#menu").is(":visible")) {
+                $("#menu").css({"top": "-100%", "display": "none"});
+                $("#first").css({"transform": "rotate(0deg)", "top": "0%"});
+                $("#third").css({"transform": "rotate(0deg)", "top": "80%"});
+                $("#second").css("display", "block");
+
+            }else {
+                $("#menu").css({"top": "0%", "display": "flex"});
+                $("#first").css({"transform": "rotate(45deg)", "top": "40%"})
+                $("#third").css({"transform": "rotate(-45deg)", "top": "40%"});
+                $("#second").css("display", "none");
+            }
+        })
+    </script>
 </body>
 </html>
