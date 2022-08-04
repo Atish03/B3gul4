@@ -35,13 +35,13 @@
     .main {
         position: relative;
         height: fit-content; width: 70%;
-        padding: 30px;
         background-color: rgb(32, 32, 32);
         display: flex; justify-content: top;
         flex-direction: column;
         align-items: center;
         margin-top: 50px; 
         border-radius: 10px; 
+        padding: 0px;
     }
 
     .viewer {
@@ -107,33 +107,17 @@
     image {
         margin: 20px;
     }
-    @media only screen and (max-width: 600px) {
-        img {
-            width: 100%;
-        }
-        code {
-            font-size: 10px;
-        }
-        #main > div::before {
-            font-size: 15px;
-            width: 100px;
-            left: -10px;
-        }
-        #main > div {
-            font-size: 15px;
-            width: 80%;
-        }
-    }
+
     .button {
         position: relative;
-        height: 35px; width: 120px;
-        background-color: aliceblue;
-        right: -45.5%;
+        height: 80px; width: 100%;
+        background-color: transparent;
         text-align: center;
         font-family: 'Titillium Web', sans-serif; font-size: 20px;
         font-size: 20px;
         border-radius: 5px;
         cursor: pointer;
+        z-index: 1;
     }
     .title {
         position: absolute;
@@ -144,13 +128,33 @@
         font-size: 40px;
         color: white;
     }
+    @media only screen and (max-width: 600px) {
+        code {
+            font-size: 10px;
+        }
+        .dostyle::before {
+            font-size: 15px;
+            width: 100px;
+            left: -10px;
+        }
+        .dostyle {
+            font-size: 15px;
+        }
+        .title {
+            top: 35%;
+            font-size: 15px;
+        }
+        .main {
+            margin-top: 25px;
+        }
+    }
 </style>
 <body>
     <div id="container">
         
         <div id="TARp" class="main" data-stat="closed">
-            <div class="button">VIEW</div>
-            <div class="title">TARp (100pts)</div>
+            <div class="button"></div>
+            <div class="title">TARp</div>
             <span class="viewer">
                 <div class="dostyle" id="descp">It helps to have a rain tarp when there's bad weather.</div>
                 <div class="dostyle" id="files"><a href="https://fdow.nl/tiUxj#server.py" target="_blank" style="color: lightblue;">server.py</a></div>
@@ -159,8 +163,8 @@
         </div>
 
         <div id="RelativelySmallArguments" class="main" data-stat="closed">
-            <div class="button">VIEW</div>
-            <div class="title">Relatively Small Arguments (75pts)</div>
+            <div class="button"></div>
+            <div class="title">Relatively Small Arguments</div>
             <span class="viewer">
                 <div class="dostyle" id="descp">Last challenge before the big CTF! Bog-standard RSA, but I made some of the numbers smaller, just for slightly faster calculation.</div>
                 <div class="dostyle" id="files"><a href="https://imaginaryctf.org/f/3z4Km#rsa.py" target="_blank" style="color: lightblue;">rsa.py</a></div>
