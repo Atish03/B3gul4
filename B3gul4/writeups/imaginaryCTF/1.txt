@@ -1,0 +1,79 @@
+After seeing the challenge we come to know that since e is very large, it is vulnerable to wiener attack.
+The following script helps find the factors of n.
+<pre><code>
+from Crypto.Util.number import long_to_bytes
+import generator, time, sympy
+import concurrent.futures
+
+inps = [N, e]
+
+N, e = inps[0], inps[1]
+
+array = [0]
+
+while True:
+	try:
+		array.append(N // e)
+		N, e = e, N % e 
+	except:
+		break
+
+def getFraction(a, b, c):
+	return (a * c + b), c 
+
+ans = []
+
+for i in range(2, len(array) + 1):
+	arr = array[:i]
+	a = arr[len(arr) - 2]; b = 1; c = arr[len(arr) - 1]
+
+	for i in range(2, len(arr)):
+		f = getFraction(a, b, c)
+		a, b, c = arr[len(arr) - i - 1], f[1], f[0]
+
+	ans.append(getFraction(a, b, c))
+
+def phi(e, l):
+	return (e * l[1]  - 1) // l[0]
+
+fac = 0
+
+N, e = inps[0], inps[1]
+phis = []
+
+for i in ans:
+	phis.append(phi(e, i))
+
+def getFacs(N, phi):
+	b = N - phi + 1
+	x = sympy.Symbol('x')
+	roots = sympy.solve(x ** 2 - b * x + N, x)
+	return roots
+
+def solve(phi):
+	try:
+		m = 1000000000
+		c = pow(m, e, N)
+		d = pow(e, -1, phi)
+		trial = pow(c, d, N)
+
+		if trial == m:
+			print("Successful")
+			print("a, b =     ", getFacs(N, phi))
+			print("real a, b =", sorted(inps[3:]))
+			exit()
+	except:
+		pass
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+	results = executor.map(solve, set(phis))
+</code></pre>
+
+The output is
+<pre><code>
+Successful
+a, b = [10946443818935847842040088425138205790828659233739184643266450017670561088179455889740238135748103328073108792762550709377027565574259579156889285438210341, 
+12321144061472032242255979466591769857716724464091967122574394668589221096124080629606510000575913465494602974020302472451008785711474402700376936355791309]
+</code></pre>
+
+hence find phi and decoding our cipher text.

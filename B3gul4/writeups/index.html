@@ -19,24 +19,53 @@
         width: 100vw;
         background-color: rgb(240, 254, 255);
         display: flex;
-        align-items: top; justify-content: center;
+        flex-direction: column;
+        align-items: top; justify-content: top;
     }
     #container svg {
         position: absolute;
         bottom: 0vh;
     }
-    #htb {
-        margin: 50px;
+    #THM, #CTF {
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 100px;
+        padding-left: 10px;
         display: flex;
         align-items: top;
         justify-content: center;
         flex-wrap: wrap;
         height: max-content;
+        width: fit-content;
+        background-color: rgb(78, 78, 78);
+        border-radius: 5px;
     }
+
+    #THM::before, #CTF::before {
+        position: absolute;
+        height: 70px; width: 200px;
+        background-color: transparent;
+        top: -55px;
+        text-align: center;
+        font-family: 'Bebas Neue', cursive;
+        font-size: 40px;
+        text-shadow: 0px 0px 10px rgb(213, 176, 255);
+        color: rgb(61, 61, 61);
+    }
+
+    #THM::before {
+        content: "TRY HACK ME";
+    }
+    #CTF::before {
+        content: "CTF";
+    }
+
     .box {
         position: relative;
         height: 60px; width: 200px;
         margin: 10px;
+        margin-left: 0px;
         border: 1px solid rgb(157, 252, 177);
         background-color: rgb(157, 252, 177);
         text-align: center;
@@ -55,6 +84,12 @@
     .box:hover {
         background-color: aliceblue;
     }
+
+    .ctf {
+        background-color: rgb(255, 137, 91);
+        border-color: rgb(255, 137, 91);
+    }
+
     @media only screen and (max-width: 600px) {
         .box {
             margin-top: 5px;
@@ -64,7 +99,7 @@
 <body>
     <div id="container">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#f781f7" fill-opacity="1" d="M0,160L80,144C160,128,320,96,480,117.3C640,139,800,213,960,218.7C1120,224,1280,160,1360,128L1440,96L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path></svg>
-        <div id="htb">
+        <div id="THM">
             <div class="box"><a href="./anonymous/">Anonymous</a></div>
             <div class="box"><a href="./lookingGlass/">Looking Glass</a></div>
             <div class="box"><a href="./develpy/">Develpy</a></div>
@@ -72,6 +107,9 @@
             <div class="box"><a href="./yearoftherabbit/">Year of the rabbit</a></div>
             <div class="box"><a href="./ignite/">Ignite</a></div>
             <div class="box"><a href="./gallery/">Gallery</a></div>
+        </div>
+        <div id="CTF">
+            <div class="ctf box"><a href="./imaginaryCTF/">Imaginary CTF</a></div>
         </div>
     </div>
 </body>
