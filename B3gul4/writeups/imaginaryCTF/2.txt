@@ -1,0 +1,4 @@
+Reading through the challenge code we see that <code>name</code> consists of our input and is converted to long and is set as the seed for random.
+what we can try is to give such bytes whose long when set as seed returns the minimum possible number when <code>random.getrandbits</code> is called.
+Brute forcing through all numbers and looking for the minimum, we land at <code>4213973159</code>, which returns 0 on the first call of random.getrandbits(32).
+hence converting this long to bytes and passing in the input (since passing bytes is difficult through shell, we use <code>pwntools</code>), we get <code>n, e, c</code> since <code>e = 2 * getrandbits(32) + 1</code>, we get e as 1. Since e is 1, the c we get is the flag itself.

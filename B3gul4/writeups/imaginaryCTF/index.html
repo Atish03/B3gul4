@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&family=Titillium+Web:wght@200&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lexend+Exa&display=swap" rel="stylesheet">
-    <title>Overpass</title>
+    <title>ImaginaryCTF</title>
 </head>
 <style>
     body {
@@ -139,6 +139,7 @@
         }
         .dostyle {
             font-size: 15px;
+            width: 90%;
         }
         .title {
             top: 35%;
@@ -172,6 +173,35 @@
             </span>
         </div>
 
+        <div id="Personalized" class="main" data-stat="closed">
+            <div class="button"></div>
+            <div class="title">Personalized</div>
+            <span class="viewer">
+                <div class="dostyle" id="descp">I found this place that just hands out flags! The only problem is that they're all encrypted, tailored to you, personally. Can you decrypt it?</div>
+                <div class="dostyle" id="files"><a href="https://imaginaryctf.org/f/9FgS0#enc.py" target="_blank" style="color: lightblue;">enc.py</a></div>
+                <div class="dostyle solution"></div>
+            </span>
+        </div>
+
+        <div id="AES" class="main" data-stat="closed">
+            <div class="button"></div>
+            <div class="title">AES</div>
+            <span class="viewer">
+                <div class="dostyle" id="descp" style="text-align: left;"><pre><code>Python 3.8.10 (default, Mar 15 2022, 12:22:08)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import random
+>>> from Crypto.Cipher import AES
+>>> key = random.choice(open("rockyou.txt", "rb").readlines()[:10000]).strip()
+>>> key = key.zfill(16)
+>>> cipher = AES.new(key, AES.MODE_ECB)
+>>> cipher.encrypt(open("flag.txt", "rb").read().zfill(48))
+b"\xd6\x19O\xbeA\xb0\x15\x87\x0e\xc7\xc4\xc1\xe9h\xd8\xe6\xc6\x95\x82\xaa#\x91\xdb2l\xfa\xf7\xe1C\xb8\x11\x04\x82p\xe5\x9e\xb1\x0c*\xcc[('\x0f\xcc\xa7W\xff"</code></pre></div>
+                <div class="dostyle" id="files"><a>NO FILE</a></div>
+                <div class="dostyle solution"></div>
+            </span>
+        </div>
+
     </div>
     <script src="../highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
@@ -194,7 +224,7 @@
             }
             rawFile.send(null);
         }
-        for (var i = 0; i <= 1; i++) {
+        for (var i = 0; i <= 3; i++) {
             readTextFile(i + ".txt", i);
         }
     </script>
